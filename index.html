@@ -229,6 +229,8 @@ function onLoad()
 	var tt = document.getElementById("player").duration;
 	var sec = parseInt(tt % 60);
 	document.getElementById("totaltime").innerHTML = parseInt(tt/60) + ":" + ((sec < 10) ? ("0" + sec) : sec);
+	document.getElementById("curtime").innerHTML = "0:00";
+	document.getElementById("process_bar").style.width = 0;
 }
 
 function onUpdate()
