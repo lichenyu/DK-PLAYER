@@ -1,0 +1,164 @@
+#container
+{
+	width: 500px;
+	margin: 0px auto;
+	border-style: solid;
+}
+
+#header
+{
+	font-size: 20px;
+	text-align: center;
+	height: 25px;
+	line-height: 25px;
+	color: #ffffff;
+	background-color: #000000;
+}
+
+#controls
+{
+	text-align: center;
+	background-color: #000000;
+}
+
+#process_bar_bg
+{
+	height: 10px;
+	background-color: #000000;
+	cursor: pointer;
+}
+
+#process_bar
+{
+	height: 10px;
+	width: 0px;
+	background-color: #ffffff;
+}
+
+#panel
+{
+	height: 40px;
+	background-color: #000000;
+	padding-top: 10px;
+}
+
+.item
+{
+	width: 490px;
+	height: 25px;
+	line-height: 25px;
+	overflow: hidden;
+	margin: 5px auto;
+	padding-left: 5px;
+	box-shadow: 0px 0px 5px #737373;
+	cursor: pointer;
+}
+
+.item:hover
+{
+	background-color: #eeeeee;
+}
+
+#play_pause_button
+{
+	width: 30px;
+	height: 30px;
+	margin: 0px 10px;
+	background-image: url("images/play_pause.png");
+	background-size: cover;
+	border: 0px solid black;
+	cursor: pointer;
+	float: left;
+}
+
+#stop_button
+{
+	width: 30px;
+	height: 30px;
+	margin: 0px 10px;
+	background-image: url("images/stop.png");
+	background-size: cover;
+	border: 0px solid black;
+	cursor: pointer;
+	float: left;
+}
+
+#last_button
+{
+	width: 30px;
+	height: 30px;
+	margin: 0px 10px;
+	background-image: url("images/last.png");
+	background-size: cover;
+	border: 0px solid black;
+	cursor: pointer;
+	float: left;
+}
+
+#next_button
+{
+	width: 30px;
+	height: 30px;
+	margin: 0px 10px;
+	background-image: url("images/next.png");
+	background-size: cover;
+	border: 0px solid black;
+	cursor: pointer;
+	float: left;
+}
+
+#timestr
+{
+	color: #ffffff;
+	margin-left: 30px;
+	height: 30px;
+	line-height: 30px;
+	float: left;
+}
+
+#order_button
+{
+	width: 30px;
+	height: 30px;
+	margin: 0px 10px;
+	background-image: url("images/order.png");
+	background-size: cover;
+	border-style: solid;
+	border-width: 0px 0px 1px 0px;
+	border-color: #00ff22;
+	cursor: pointer;
+	float: right;
+}
+
+#repeat_button
+{
+	width: 30px;
+	height: 30px;
+	margin: 0px 10px;
+	background-image: url("images/repeat.png");
+	background-size: cover;
+	border-style: solid;
+	border-width: 0px;
+	border-color: #00ff22;
+	cursor: pointer;
+	float: right;
+}
+
+#random_button
+{
+	width: 30px;
+	height: 30px;
+	margin: 0px 10px;
+	background-image: url("images/random.png");
+	background-size: cover;
+	border-style: solid;
+	border-width: 0px;
+	border-color: #00ff22;
+	cursor: pointer;
+	float: right;
+}
+
+#clear	/*结束浮动*/
+{
+	clear: both;
+}

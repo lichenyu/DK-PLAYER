@@ -1,0 +1,286 @@
+<html>
+
+<head>
+	<title>DK PLAYER</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="stylesheet" type="text/css" href="layout.css" />
+
+<script>
+/*
+0: stop;
+1: playing;
+2: pause;
+*/
+var status = 0;
+
+/*
+0: order;
+1: repeat;
+2: random;
+*/
+var mode = 0;
+
+var srcdir = "musics/";
+var srclist;
+var curidx = 0;
+
+function play_pause()
+{
+	var p = document.getElementById("player");
+	var b = document.getElementById("play_pause_button");
+	if(0 == status || 2 == status)
+	{
+		p.play();
+		b.style.backgroundImage = "url(\"images/pause_play.png\")";
+		status = 1;
+	}
+	else if(1 == status)
+	{
+		p.pause();
+		b.style.backgroundImage = "url(\"images/play_pause.png\")";
+		status = 2;
+	}
+}
+
+function stop()
+{
+	var p = document.getElementById("player");
+	var b = document.getElementById("play_pause_button");
+	p.load();
+	b.style.backgroundImage = "url(\"images/play_pause.png\")";
+	status = 0;
+}
+
+function next()
+{
+	if(srclist.length-1 == curidx)
+	{
+		if(1 == status)
+		{
+			playRightNow(0);
+		}
+		else
+		{
+			changeRightNow(0);
+		}
+	}
+	else
+	{
+		if(1 == status)
+		{
+			playRightNow(curidx + 1);
+		}
+		else
+		{
+			changeRightNow(curidx + 1);
+		}
+	}
+}
+
+function last()
+{
+	if(0 == curidx)
+	{
+		if(1 == status)
+		{
+			playRightNow(srclist.length-1);
+		}
+		else
+		{
+			changeRightNow(srclist.length-1);
+		}
+	}
+	else
+	{
+		if(1 == status)
+		{
+			playRightNow(curidx - 1);
+		}
+		else
+		{
+			changeRightNow(curidx - 1);
+		}
+	}
+}
+
+function changeMode(m)
+{
+	mode = m;
+	switch(mode)
+	{
+		case 0:
+		{
+			document.getElementById("order_button").style.borderBottomWidth = 1;
+			document.getElementById("repeat_button").style.borderBottomWidth = 0;
+			document.getElementById("random_button").style.borderBottomWidth = 0;
+			break;
+		}
+		case 1:
+		{
+			document.getElementById("order_button").style.borderBottomWidth = 0;
+			document.getElementById("repeat_button").style.borderBottomWidth = 1;
+			document.getElementById("random_button").style.borderBottomWidth = 0;
+			break;
+		}
+		case 2:
+		{
+			document.getElementById("order_button").style.borderBottomWidth = 0;
+			document.getElementById("repeat_button").style.borderBottomWidth = 0;
+			document.getElementById("random_button").style.borderBottomWidth = 1;
+			break;
+		}
+		default:
+			break;
+	}
+}
+
+function initByServer()
+{
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function()
+	{
+		if(4 == xmlhttp.readyState && 200 == xmlhttp.status)
+		{
+			srclist = eval(xmlhttp.responseText.substring(0, xmlhttp.responseText.indexOf("]")+1));
+			//srclist = eval(xmlhttp.responseText);
+			//srclist = JSON.parse(xmlhttp.responseText);
+			init();
+		}
+	}
+	xmlhttp.open("GET","getSrclist.php",true);
+	xmlhttp.send();
+}
+
+function init()
+{
+	var p = document.getElementById("player");
+	
+	for(var i = 0; i < srclist.length; ++i)
+	{
+		var itm = document.createElement("div");
+		itm.className = "item";
+		itm.id = "item" + i;
+		itm.value = i;
+		itm.innerText = srclist[i];
+		itm.onclick = function(){playRightNow(this.value);};
+		document.getElementById("items").appendChild(itm);
+	}
+	
+	p.src = srcdir + srclist[curidx];
+	
+	document.getElementById("item" + curidx).style.color = "#00ff11";
+	
+	p.addEventListener("ended", onEnd, false);
+	p.addEventListener("loadedmetadata", onLoad, false);
+	p.addEventListener("timeupdate", onUpdate, false);
+
+}
+
+function playRightNow(srcidx)
+{
+	document.getElementById("item" + curidx).style.color = "#000000";
+	curidx = srcidx;
+	var p = document.getElementById("player");
+	p.src = srcdir + srclist[curidx];
+	p.load();
+	p.play();
+	if(1 != status)
+	{
+		status = 1;
+		var b = document.getElementById("play_pause_button");
+		b.style.backgroundImage = "url(\"images/pause_play.png\")";
+	}
+	document.getElementById("item" + curidx).style.color = "#00ff11";
+}
+
+function changeRightNow(srcidx)
+{
+	document.getElementById("item" + curidx).style.color = "#000000";
+	curidx = srcidx;
+	var p = document.getElementById("player");
+	p.src = srcdir + srclist[curidx];
+	p.load();
+	document.getElementById("item" + curidx).style.color = "#00ff11";
+}
+
+function onEnd()
+{
+	if(0 == mode)
+	{
+		if(srclist.length-1 == curidx)
+		{
+			playRightNow(0);
+		}
+		else
+		{
+			playRightNow(curidx + 1);
+		}
+	}
+	else if(1 == mode)
+	{
+		playRightNow(curidx);
+	}
+	else
+	{}
+}
+
+function onLoad()
+{
+	var tt = document.getElementById("player").duration;
+	var sec = parseInt(tt % 60);
+	document.getElementById("totaltime").innerHTML = parseInt(tt/60) + ":" + ((sec < 10) ? ("0" + sec) : sec);
+}
+
+function onUpdate()
+{
+	var p = document.getElementById("player");
+	var tt = p.duration;
+	var ct = p.currentTime;
+	var sec = parseInt(ct % 60);
+	document.getElementById("curtime").innerHTML = parseInt(ct / 60) + ":" + ((sec < 10) ? ("0" + sec) : sec);
+	document.getElementById("process_bar").style.width = ct / tt * 500 + "px";
+}
+</script>
+
+
+</head>
+
+<body>
+<div id="container">
+	<div id="header">DK PLAYER</div>
+	<div id="process_bar_bg"><div id="process_bar"></div></div>
+	<div id="controls">
+		<audio id="player"></audio>
+		<!--<audio id="player" controls="controls"></audio>-->
+	</div>
+	<div id="panel">
+		<div id="last_button" onclick="last();"></div>
+		<div id="play_pause_button" onclick="play_pause();"></div>
+		<div id="stop_button" onclick="stop();"></div>
+		<div id="next_button" onclick="next();"></div>
+		<div id="timestr"><span id="curtime">0:00</span> / <span id="totaltime">999:99</span></div>
+		<div id="random_button" onclick="changeMode(2);"></div>
+		<div id="repeat_button" onclick="changeMode(1);"></div>
+		<div id="order_button" onclick="changeMode(0);"></div>
+	</div>
+	<div id="clear"></div>
+	<div id="items"></div>
+</div>
+
+<p>
+Last-Mordified:<br/>
+14-01-27<br/>
+<br/>
+ToDo-List:<br/>
+Skip暂未实现<br/>
+Random暂未实现<br/>
+</p>
+</body>
+
+<script src="srclist.js"></script>
+<script>
+//initByServer();
+initByLocal();
+</script>
+
+</html>
