@@ -20,8 +20,7 @@ var status = 0;
 */
 var mode = 0;
 
-var srcdir = "musics/";
-var srclist;
+var srcinfo;
 var curidx = 0;
 
 function play_pause()
@@ -53,7 +52,7 @@ function stop()
 
 function next()
 {
-	if(srclist.length-1 == curidx)
+	if(srcinfo.srclist.length - 1 == curidx)
 	{
 		if(1 == status)
 		{
@@ -83,11 +82,11 @@ function last()
 	{
 		if(1 == status)
 		{
-			playRightNow(srclist.length-1);
+			playRightNow(srcinfo.srclist.length - 1);
 		}
 		else
 		{
-			changeRightNow(srclist.length-1);
+			changeRightNow(srcinfo.srclist.length - 1);
 		}
 	}
 	else
@@ -141,13 +140,13 @@ function initByServer()
 	{
 		if(4 == xmlhttp.readyState && 200 == xmlhttp.status)
 		{
-			srclist = eval(xmlhttp.responseText.substring(0, xmlhttp.responseText.indexOf("]")+1));
-			//srclist = eval(xmlhttp.responseText);
+			//srclist = eval("(" + xmlhttp.responseText.substring(0, xmlhttp.responseText.indexOf("]")+1) + ")");
+			srcinfo = eval("(" + xmlhttp.responseText + ")");
 			//srclist = JSON.parse(xmlhttp.responseText);
 			init();
 		}
 	}
-	xmlhttp.open("GET","getSrclist.php",true);
+	xmlhttp.open("GET","getSrcinfo.php",true);
 	xmlhttp.send();
 }
 
@@ -155,18 +154,18 @@ function init()
 {
 	var p = document.getElementById("player");
 	
-	for(var i = 0; i < srclist.length; ++i)
+	for(var i = 0; i < srcinfo.srclist.length; ++i)
 	{
 		var itm = document.createElement("div");
 		itm.className = "item";
 		itm.id = "item" + i;
 		itm.value = i;
-		itm.innerText = srclist[i];
+		itm.innerText = srcinfo.srclist[i].name;
 		itm.onclick = function(){playRightNow(this.value);};
 		document.getElementById("items").appendChild(itm);
 	}
 	
-	p.src = srcdir + srclist[curidx];
+	p.src = srcinfo.srcdir + srcinfo.srclist[curidx].src;
 	
 	document.getElementById("item" + curidx).style.color = "#00ff11";
 	
@@ -181,7 +180,7 @@ function playRightNow(srcidx)
 	document.getElementById("item" + curidx).style.color = "#000000";
 	curidx = srcidx;
 	var p = document.getElementById("player");
-	p.src = srcdir + srclist[curidx];
+	p.src = srcinfo.srcdir + srcinfo.srclist[curidx].src;
 	p.load();
 	p.play();
 	if(1 != status)
@@ -198,7 +197,7 @@ function changeRightNow(srcidx)
 	document.getElementById("item" + curidx).style.color = "#000000";
 	curidx = srcidx;
 	var p = document.getElementById("player");
-	p.src = srcdir + srclist[curidx];
+	p.src = srcinfo.srcdir + srcinfo.srclist[curidx].src;
 	p.load();
 	document.getElementById("item" + curidx).style.color = "#00ff11";
 }
@@ -207,7 +206,7 @@ function onEnd()
 {
 	if(0 == mode)
 	{
-		if(srclist.length-1 == curidx)
+		if(srcinfo.srclist.length - 1 == curidx)
 		{
 			playRightNow(0);
 		}
@@ -271,7 +270,7 @@ function onUpdate()
 
 <p>
 Last-Mordified:<br/>
-14-01-27<br/>
+14-01-30<br/>
 <br/>
 ToDo-List:<br/>
 Skip暂未实现<br/>
@@ -279,7 +278,7 @@ Random暂未实现<br/>
 </p>
 </body>
 
-<script src="srclist.js"></script>
+<script src="srcinfo.js"></script>
 <script>
 //initByServer();
 initByLocal();
