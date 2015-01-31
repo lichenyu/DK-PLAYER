@@ -146,7 +146,7 @@ function initByServer()
 			init();
 		}
 	}
-	xmlhttp.open("GET","getSrcinfo.php",true);
+	xmlhttp.open("GET","srcinfo.php",true);
 	xmlhttp.send();
 }
 
@@ -241,15 +241,30 @@ function onUpdate()
 	document.getElementById("curtime").innerHTML = parseInt(ct / 60) + ":" + ((sec < 10) ? ("0" + sec) : sec);
 	document.getElementById("process_bar").style.width = ct / tt * 500 + "px";
 }
-</script>
 
+function skip()
+{
+	var p = document.getElementById("player");
+	var bg = document.getElementById("process_bar_bg");
+	var bar = document.getElementById("process_bar");
+	
+	var ct = (event.screenX - bg.getBoundingClientRect().left) / (bg.getBoundingClientRect().right - bg.getBoundingClientRect().left) * p.duration;
+	p.currentTime = ct;
+	bar.style.width = ct / p.duration * 500 + "px";
+	
+	if(1 == status)
+	{
+		p.play();
+	}
+}
+</script>
 
 </head>
 
 <body>
 <div id="container">
 	<div id="header">DK PLAYER</div>
-	<div id="process_bar_bg"><div id="process_bar"></div></div>
+	<div id="process_bar_bg" onclick="skip();"><div id="process_bar"></div></div>
 	<div id="controls">
 		<audio id="player"></audio>
 		<!--<audio id="player" controls="controls"></audio>-->
@@ -270,10 +285,9 @@ function onUpdate()
 
 <p>
 Last-Mordified:<br/>
-14-01-30<br/>
+14-01-31<br/>
 <br/>
 ToDo-List:<br/>
-Skip暂未实现<br/>
 Random暂未实现<br/>
 </p>
 </body>
